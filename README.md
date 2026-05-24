@@ -1,56 +1,91 @@
-# Welcome to your Expo app 👋
+# Antigravity — Кастомное iOS-приложение 📱✨
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Персональное мобильное приложение для iPhone на базе **React Native + Expo**, объединяющее в себе четыре ключевых инструмента для повседневной жизни: финансы, дневник, планировщик тренировок и трекер привычек. Приложение полностью автономно и работает без бэкенда, сохраняя все данные локально на устройстве.
 
-## Get started
+---
 
-1. Install dependencies
+## 🌟 Основные модули
 
-   ```bash
-   npm install
-   ```
+### 1. 💰 Финансы (Finance)
+* **Баланс**: Учет общих доходов и расходов с распределением по категориям.
+* **Цели накопления**: Создание финансовых целей с визуальным прогресс-баром (сколько накоплено / сколько осталось накопить).
+* **Интерактивность**: Возможность в один клик откладывать деньги на выбранные цели прямо из списка.
 
-2. Start the app
+### 2. 📖 Дневник (Journal)
+* **Индикатор настроения**: Удобная горизонтальная шкала со смайликами для быстрой оценки эмоционального состояния за день.
+* **Архив записей**: Хронологическая лента прошедших дней с возможностью фильтрации по датам, просмотра деталей, редактирования и удаления прошлых мыслей.
 
-   ```bash
-   npx expo start
-   ```
+### 3. 🏋️‍♂️ Зал и Тренировки (Workout)
+* **Выбор сплитов**: Разделение на 3 основных тренировочных дня (Спина+Бицепс, Грудь+Трицепс, Ноги+Плечи).
+* **Динамические шаблоны**:
+  - На первой тренировке вы вписываете упражнения самостоятельно.
+  - При завершении тренировки шаблон сохраняется.
+  - На последующих тренировках этот план подгружается автоматически, позволяя просто вводить веса/повторения и отслеживать прогресс, а также на ходу добавлять или удалять упражнения.
+* **История тренировок**: Удобный просмотр выполненных сессий с указанием точных весов и повторений.
 
-In the output, you'll find options to open the app in a
+### 4. 📅 Привычки (Habits)
+* **Чек-листы**: Список ежедневных привычек с чекбоксами для отметки о выполнении.
+* **Серии выполнения (Streaks)**: Автоматический подсчет дней непрерывного выполнения для каждой привычки, что мотивирует не прерывать цепочку.
+* **Общая статистика**: Отображение общего количества завершений.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## 🎨 Дизайн и Кастомизация
+Приложение спроектировано в современном минималистичном стиле с плавными анимациями запуска (Splash Screen) и поддержкой **6 премиальных тем** (например, Темный неон, Изумрудный, Лаванда и др.). 
+* Меню смены тем доступно по нажатию на иконку шестеренки ⚙️ на экране «Финансы».
 
-## Get a fresh project
+---
 
-When you're ready, run:
+## 🛠 Технологический стек
+* **Core**: React Native + TypeScript
+* **Платформа**: Expo (SDK 54 для совместимости с физическим iPhone в Expo Go)
+* **Навигация**: Expo Router (файловая Tab-навигация)
+* **Хранение данных**: `@react-native-async-storage/async-storage` (локальная база данных ключ-значение)
+* **Иконки**: `lucide-react-native` (+ кастомные векторные ассеты)
 
+---
+
+## 🚀 Как запустить проект локально
+
+### 1. Установка зависимостей
+Убедитесь, что у вас установлен Node.js. Запустите в корне проекта:
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### 2. Запуск локального сервера Metro
+Запустите сервер разработки:
+```bash
+npm start
+```
+В терминале сгенерируется QR-код.
 
-### Other setup steps
+### 3. Открытие на iPhone
+1. Установите бесплатное приложение **Expo Go** из App Store.
+2. Подключите ваш iPhone и компьютер к **одной сети Wi-Fi**.
+3. Откройте камеру на iPhone, отсканируйте QR-код и нажмите «Открыть в Expo Go».
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+---
 
-## Learn more
+## ☁️ Облачный деплой (EAS Update)
 
-To learn more about developing your project with Expo, look at the following resources:
+Приложение настроено для работы **без компьютера**. Последний JS-бандл опубликован в облаке Expo.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### Как обновить код в облаке:
+Если вы внесли изменения в проект и хотите, чтобы они появились на телефоне:
+```bash
+npx eas update --branch production --message "Описание вашего обновления"
+```
+Обновление автоматически применится на iPhone при следующем запуске приложения.
 
-## Join the community
+### Как настроить запуск в один клик с иконкой на iPhone (без ПК):
+1. Сохраните премиальную иконку [premium_app_icon.png](premium_app_icon.png) с компьютера в галерею вашего iPhone.
+2. Откройте приложение **Команды** (Shortcuts) на iOS.
+3. Создайте новую команду:
+   - Действие: **Открыть URL** (Open URLs).
+   - URL: `exp://u.expo.dev/6bcda13e-cadb-4b0b-8efb-1fa29f3c0db1?channel-name=production`
+4. Переименуйте команду (например, в **«Antigravity»**).
+5. Нажмите **На экран «Домой»** (Add to Home Screen).
+6. Выберите сохраненное фото иконки и нажмите **Добавить**.
 
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Теперь ярлык на главном экране вашего телефона будет мгновенно открывать приложение напрямую из облака!
