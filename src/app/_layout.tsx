@@ -1,18 +1,20 @@
 import { Tabs } from 'expo-router';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useColorScheme, Platform, StyleSheet, View } from 'react-native';
+import { useColorScheme, Platform, View } from 'react-native';
 import { Wallet as LucideWallet, BookOpen as LucideBookOpen, Dumbbell as LucideDumbbell, CheckSquare as LucideCheckSquare } from 'lucide-react-native';
+
 const Wallet = LucideWallet as any;
 const BookOpen = LucideBookOpen as any;
 const Dumbbell = LucideDumbbell as any;
 const CheckSquare = LucideCheckSquare as any;
 
-import { Colors } from '@/constants/theme';
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
+import { ThemeProvider as CustomThemeProvider } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/use-theme';
 
-export default function RootLayout() {
+function AppLayout() {
+  const theme = useTheme();
   const colorScheme = useColorScheme();
-  const theme = Colors[colorScheme === 'dark' ? 'dark' : 'light'];
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
@@ -20,11 +22,11 @@ export default function RootLayout() {
         <AnimatedSplashOverlay />
         <Tabs
           screenOptions={{
-            tabBarActiveTintColor: '#6366F1', // Indigo Accent
+            tabBarActiveTintColor: theme.accent,
             tabBarInactiveTintColor: theme.textSecondary,
             tabBarStyle: {
               backgroundColor: theme.background,
-              borderTopColor: theme.backgroundElement,
+              borderTopColor: theme.border,
               height: Platform.OS === 'ios' ? 88 : 65,
               paddingBottom: Platform.OS === 'ios' ? 30 : 10,
               paddingTop: 10,
@@ -41,7 +43,7 @@ export default function RootLayout() {
             },
             headerStyle: {
               backgroundColor: theme.background,
-              borderBottomColor: theme.backgroundElement,
+              borderBottomColor: theme.border,
               borderBottomWidth: 1,
               shadowColor: 'transparent',
               elevation: 0,
@@ -98,5 +100,13 @@ export default function RootLayout() {
         </Tabs>
       </View>
     </ThemeProvider>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <CustomThemeProvider>
+      <AppLayout />
+    </CustomThemeProvider>
   );
 }

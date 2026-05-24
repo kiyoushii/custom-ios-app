@@ -12,7 +12,8 @@ import {
   useColorScheme,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Plus as LucidePlus, Trash2 as LucideTrash2, ArrowUpRight as LucideArrowUpRight, ArrowDownRight as LucideArrowDownRight, Target as LucideTarget, Award as LucideAward, DollarSign as LucideDollarSign } from 'lucide-react-native';
+import { Tabs } from 'expo-router';
+import { Plus as LucidePlus, Trash2 as LucideTrash2, ArrowUpRight as LucideArrowUpRight, ArrowDownRight as LucideArrowDownRight, Target as LucideTarget, Award as LucideAward, DollarSign as LucideDollarSign, Settings as LucideSettings, Check as LucideCheck } from 'lucide-react-native';
 const Plus = LucidePlus as any;
 const Trash2 = LucideTrash2 as any;
 const ArrowUpRight = LucideArrowUpRight as any;
@@ -20,15 +21,19 @@ const ArrowDownRight = LucideArrowDownRight as any;
 const Target = LucideTarget as any;
 const Award = LucideAward as any;
 const DollarSign = LucideDollarSign as any;
+const Settings = LucideSettings as any;
+const Check = LucideCheck as any;
 
-import { Colors, Spacing } from '@/constants/theme';
+import { Themes, Spacing } from '@/constants/theme';
+import { useCustomTheme } from '@/context/ThemeContext';
 import { Storage, Transaction, SavingGoal } from '@/utils/storage';
 
 export default function FinanceScreen() {
   const colorScheme = useColorScheme();
-  const theme = Colors[colorScheme === 'dark' ? 'dark' : 'light'];
+  const { themeName, theme, setThemeName, availableThemes } = useCustomTheme();
 
   // State
+  const [settingsVisible, setSettingsVisible] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [goals, setGoals] = useState<SavingGoal[]>([]);
   
@@ -208,6 +213,19 @@ export default function FinanceScreen() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={['bottom']}>
+      <Tabs.Screen
+        options={{
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => setSettingsVisible(true)}
+              style={{ padding: 10, marginRight: 6 }}
+            >
+              <Settings color={theme.text} size={22} />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      
       <ScrollView contentContainerStyle={styles.scrollContent}>
         
         {/* CARD Balance */}
@@ -531,6 +549,59 @@ export default function FinanceScreen() {
         </View>
       </Modal>
 
+      {/* MODAL: THEME SETTINGS */}
+      <Modal visible={settingsVisible} animationType="slide" transparent>
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { backgroundColor: theme.backgroundElement, maxHeight: '80%' }]}>
+            <Text style={[styles.modalTitle, { color: theme.text }]}>Выбор темы</Text>
+            <Text style={[styles.modalSubTitle, { color: theme.textSecondary, marginBottom: Spacing.three }]}>
+              Выберите цветовую палитру под ваше настроение
+            </Text>
+
+            <ScrollView contentContainerStyle={styles.themeList}>
+              {availableThemes.map(item => {
+                const isSelected = themeName === item.id;
+                const palette = Themes[item.id][colorScheme === 'dark' ? 'dark' : 'light'];
+                return (
+                  <TouchableOpacity
+                    key={item.id}
+                    style={[
+                      styles.themeRow,
+                      {
+                        backgroundColor: isSelected ? theme.backgroundSelected : 'transparent',
+                        borderColor: isSelected ? theme.accent : theme.border,
+                      }
+                    ]}
+                    onPress={() => setThemeName(item.id)}
+                  >
+                    <View style={styles.themeRowLeft}>
+                      <Text style={[styles.themeRowName, { color: theme.text, fontWeight: isSelected ? '700' : '500' }]}>
+                        {item.name}
+                      </Text>
+                      {isSelected && <Check color={theme.accent} size={16} style={{ marginLeft: 6 }} />}
+                    </View>
+                    
+                    {/* Color Previews */}
+                    <View style={styles.colorPreviews}>
+                      <View style={[styles.colorCircle, { backgroundColor: palette.background, borderColor: palette.border, borderWidth: 1 }]} />
+                      <View style={[styles.colorCircle, { backgroundColor: palette.backgroundElement, borderColor: palette.border, borderWidth: 1 }]} />
+                      <View style={[styles.colorCircle, { backgroundColor: palette.accent }]} />
+                    </View>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+
+            <TouchableOpacity
+              style={[styles.modalBtn, styles.confirmBtn, { backgroundColor: theme.accent, marginTop: Spacing.three }]}
+              onPress={() => setSettingsVisible(false)}
+            >
+              <Text style={styles.confirmBtnText}>Готово</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
     </SafeAreaView>
   );
 }
@@ -802,5 +873,33 @@ const styles = StyleSheet.create({
   confirmBtnText: {
     color: '#ffffff',
     fontWeight: '600',
+  },
+  themeList: {
+    gap: Spacing.two,
+  },
+  themeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderRadius: 12,
+  },
+  themeRowLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  themeRowName: {
+    fontSize: 15,
+  },
+  colorPreviews: {
+    flexDirection: 'row',
+    gap: 6,
+  },
+  colorCircle: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
   },
 });
