@@ -89,14 +89,6 @@ function AppLayout() {
               tabBarIcon: ({ color, size }) => <CheckSquare color={color} size={size} />,
             }}
           />
-          
-          {/* Hide explore and components that are not part of main tabs */}
-          <Tabs.Screen
-            name="explore"
-            options={{
-              href: null,
-            }}
-          />
         </Tabs>
       </View>
     </ThemeProvider>
