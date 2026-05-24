@@ -12,7 +12,14 @@ import {
   useColorScheme,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Plus, Trash2, ArrowUpRight, ArrowDownRight, Target, Award, DollarSign } from 'lucide-react-native';
+import { Plus as LucidePlus, Trash2 as LucideTrash2, ArrowUpRight as LucideArrowUpRight, ArrowDownRight as LucideArrowDownRight, Target as LucideTarget, Award as LucideAward, DollarSign as LucideDollarSign } from 'lucide-react-native';
+const Plus = LucidePlus as any;
+const Trash2 = LucideTrash2 as any;
+const ArrowUpRight = LucideArrowUpRight as any;
+const ArrowDownRight = LucideArrowDownRight as any;
+const Target = LucideTarget as any;
+const Award = LucideAward as any;
+const DollarSign = LucideDollarSign as any;
 
 import { Colors, Spacing } from '@/constants/theme';
 import { Storage, Transaction, SavingGoal } from '@/utils/storage';

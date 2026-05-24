@@ -11,7 +11,13 @@ import {
   Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Dumbbell, Calendar, Plus, Trash2, CheckCircle, Clock } from 'lucide-react-native';
+import { Dumbbell as LucideDumbbell, Calendar as LucideCalendar, Plus as LucidePlus, Trash2 as LucideTrash2, CheckCircle as LucideCheckCircle, Clock as LucideClock } from 'lucide-react-native';
+const Dumbbell = LucideDumbbell as any;
+const Calendar = LucideCalendar as any;
+const Plus = LucidePlus as any;
+const Trash2 = LucideTrash2 as any;
+const CheckCircle = LucideCheckCircle as any;
+const Clock = LucideClock as any;
 
 import { Colors, Spacing } from '@/constants/theme';
 import { Storage, WorkoutSession, WorkoutSplit, ExerciseLog, WorkoutSet } from '@/utils/storage';

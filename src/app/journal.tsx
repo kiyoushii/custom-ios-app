@@ -10,7 +10,15 @@ import {
   useColorScheme,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { BookOpen, Smile, Frown, Meh, AlertTriangle, Zap, Trash2, Calendar } from 'lucide-react-native';
+import { BookOpen as LucideBookOpen, Smile as LucideSmile, Frown as LucideFrown, Meh as LucideMeh, AlertTriangle as LucideAlertTriangle, Zap as LucideZap, Trash2 as LucideTrash2, Calendar as LucideCalendar } from 'lucide-react-native';
+const BookOpen = LucideBookOpen as any;
+const Smile = LucideSmile as any;
+const Frown = LucideFrown as any;
+const Meh = LucideMeh as any;
+const AlertTriangle = LucideAlertTriangle as any;
+const Zap = LucideZap as any;
+const Trash2 = LucideTrash2 as any;
+const Calendar = LucideCalendar as any;
 
 import { Colors, Spacing } from '@/constants/theme';
 import { Storage, JournalEntry } from '@/utils/storage';

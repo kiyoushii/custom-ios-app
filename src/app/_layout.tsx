@@ -1,7 +1,11 @@
 import { Tabs } from 'expo-router';
-import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useColorScheme, Platform, StyleSheet, View } from 'react-native';
-import { Wallet, BookOpen, Dumbbell, CheckSquare } from 'lucide-react-native';
+import { Wallet as LucideWallet, BookOpen as LucideBookOpen, Dumbbell as LucideDumbbell, CheckSquare as LucideCheckSquare } from 'lucide-react-native';
+const Wallet = LucideWallet as any;
+const BookOpen = LucideBookOpen as any;
+const Dumbbell = LucideDumbbell as any;
+const CheckSquare = LucideCheckSquare as any;
 
 import { Colors } from '@/constants/theme';
 import { AnimatedSplashOverlay } from '@/components/animated-icon';

@@ -11,7 +11,14 @@ import {
   useColorScheme,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { CheckSquare, Square, Plus, Trash2, Flame, Award, Calendar } from 'lucide-react-native';
+import { CheckSquare as LucideCheckSquare, Square as LucideSquare, Plus as LucidePlus, Trash2 as LucideTrash2, Flame as LucideFlame, Award as LucideAward, Calendar as LucideCalendar } from 'lucide-react-native';
+const CheckSquare = LucideCheckSquare as any;
+const Square = LucideSquare as any;
+const Plus = LucidePlus as any;
+const Trash2 = LucideTrash2 as any;
+const Flame = LucideFlame as any;
+const Award = LucideAward as any;
+const Calendar = LucideCalendar as any;
 
 import { Colors, Spacing } from '@/constants/theme';
 import { Storage, Habit } from '@/utils/storage';
