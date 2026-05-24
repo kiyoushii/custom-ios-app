@@ -111,17 +111,22 @@ export default function JournalScreen() {
         <View style={[styles.card, { backgroundColor: theme.backgroundElement }]}>
           <View style={styles.cardHeader}>
             <Calendar color={theme.textSecondary} size={18} />
-            <Text style={[styles.cardTitle, { color: theme.text }]}>
-              Запись на сегодня ({selectedDate})
-            </Text>
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.cardTitle, { color: theme.text }]}>Запись в дневник</Text>
+              <Text style={[styles.cardSubtitle, { color: theme.textSecondary }]}>{selectedDate}</Text>
+            </View>
           </View>
 
           {/* MOOD PICKER */}
           <Text style={[styles.label, { color: theme.textSecondary }]}>Как ты себя чувствуешь?</Text>
-          <View style={styles.moodRow}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.moodScrollContent}
+            style={styles.moodScrollView}
+          >
             {MOODS.map(m => {
               const isSelected = selectedMood === m.type;
-              const MoodIcon = m.icon;
               return (
                 <TouchableOpacity
                   key={m.type}
@@ -139,7 +144,7 @@ export default function JournalScreen() {
                 </TouchableOpacity>
               );
             })}
-          </View>
+          </ScrollView>
 
           {/* TEXT AREA */}
           <Text style={[styles.label, { color: theme.textSecondary }]}>Твои мысли, события, эмоции:</Text>
@@ -233,22 +238,30 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  cardSubtitle: {
+    fontSize: 12,
+    marginTop: 2,
+  },
   label: {
     fontSize: 12,
     fontWeight: '600',
     marginTop: Spacing.one,
   },
-  moodRow: {
+  moodScrollView: {
+    marginHorizontal: -Spacing.three,
+    paddingHorizontal: Spacing.three,
+  },
+  moodScrollContent: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: Spacing.one,
+    gap: Spacing.two,
+    paddingRight: Spacing.five,
+    paddingVertical: 4,
   },
   moodButton: {
-    flex: 1,
-    minWidth: 80,
+    width: 90,
     borderWidth: 1,
     borderRadius: 10,
-    paddingVertical: 8,
+    paddingVertical: 10,
     alignItems: 'center',
     justifyContent: 'center',
     gap: Spacing.half,

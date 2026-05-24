@@ -52,10 +52,14 @@ export default function WorkoutScreen() {
   const handleSelectSplit = (split: WorkoutSplit) => {
     setSelectedSplit(split);
     // Initialize exercises with 1 empty set each
-    const initialExercises: ExerciseLog[] = split.exercises.map(name => ({
+    let initialExercises: ExerciseLog[] = split.exercises.map(name => ({
       exerciseName: name,
       sets: [{ weight: 0, reps: 0 }],
     }));
+    // If split template is empty (e.g. first workout), initialize with 1 empty exercise
+    if (initialExercises.length === 0) {
+      initialExercises = [{ exerciseName: '', sets: [{ weight: 0, reps: 0 }] }];
+    }
     setActiveExercises(initialExercises);
   };
 
@@ -99,14 +103,17 @@ export default function WorkoutScreen() {
   const handleSaveWorkout = async () => {
     if (!selectedSplit) return;
 
-    // Filter exercises that have at least one set with non-zero reps/weight
-    const validExercises = activeExercises.map(ex => ({
-      ...ex,
-      sets: ex.sets.filter(s => s.reps > 0),
-    })).filter(ex => ex.sets.length > 0);
+    // Filter and trim exercise names, and filter sets with non-zero reps
+    const validExercises = activeExercises
+      .map(ex => ({
+        ...ex,
+        exerciseName: ex.exerciseName.trim(),
+        sets: ex.sets.filter(s => s.reps > 0),
+      }))
+      .filter(ex => ex.exerciseName !== '' && ex.sets.length > 0);
 
     if (validExercises.length === 0) {
-      Alert.alert('Ошибка', 'Запишите хотя бы один выполненный подход (повторения должны быть больше 0).');
+      Alert.alert('Ошибка', 'Введите название упражнения и запишите хотя бы один подход (повторы > 0).');
       return;
     }
 
@@ -117,9 +124,21 @@ export default function WorkoutScreen() {
       exercises: validExercises,
     };
 
+    // Update history
     const updatedHistory = [newSession, ...history];
     setHistory(updatedHistory);
     await Storage.saveWorkoutSessions(updatedHistory);
+
+    // Save updated exercise names list to the split's template
+    const updatedExercisesList = validExercises.map(e => e.exerciseName);
+    const updatedSplits = splits.map(s => {
+      if (s.id === selectedSplit.id) {
+        return { ...s, exercises: updatedExercisesList };
+      }
+      return s;
+    });
+    setSplits(updatedSplits);
+    await Storage.saveWorkoutSplits(updatedSplits);
 
     // Reset session state
     setSelectedSplit(null);
@@ -157,6 +176,23 @@ export default function WorkoutScreen() {
         },
       },
     ]);
+  };
+
+  // Add exercise to active session
+  const handleAddExercise = () => {
+    setActiveExercises([
+      ...activeExercises,
+      { exerciseName: '', sets: [{ weight: 0, reps: 0 }] }
+    ]);
+  };
+
+  // Remove exercise from active session
+  const handleRemoveExercise = (index: number) => {
+    const updated = activeExercises.filter((_, idx) => idx !== index);
+    if (updated.length === 0) {
+      updated.push({ exerciseName: '', sets: [{ weight: 0, reps: 0 }] });
+    }
+    setActiveExercises(updated);
   };
 
   return (
@@ -239,10 +275,33 @@ export default function WorkoutScreen() {
 
               {/* Exercises List */}
               {activeExercises.map((ex, exIdx) => (
-                <View key={ex.exerciseName} style={[styles.exerciseCard, { backgroundColor: theme.backgroundElement }]}>
-                  <Text style={[styles.exerciseCardTitle, { color: theme.text }]}>
-                    {exIdx + 1}. {ex.exerciseName}
-                  </Text>
+                <View key={exIdx} style={[styles.exerciseCard, { backgroundColor: theme.backgroundElement }]}>
+                  <View style={styles.exerciseHeader}>
+                    <TextInput
+                      style={[
+                        styles.exerciseInput,
+                        {
+                          color: theme.text,
+                          borderColor: theme.backgroundSelected,
+                          backgroundColor: colorScheme === 'dark' ? '#1A1B1E' : '#FFFFFF',
+                        },
+                      ]}
+                      placeholder={`Упражнение ${exIdx + 1}`}
+                      placeholderTextColor={theme.textSecondary}
+                      value={ex.exerciseName}
+                      onChangeText={(val) => {
+                        const updated = [...activeExercises];
+                        updated[exIdx].exerciseName = val;
+                        setActiveExercises(updated);
+                      }}
+                    />
+                    <TouchableOpacity
+                      style={styles.deleteExerciseBtn}
+                      onPress={() => handleRemoveExercise(exIdx)}
+                    >
+                      <Trash2 color="#EF4444" size={16} />
+                    </TouchableOpacity>
+                  </View>
 
                   {/* Header Row */}
                   <View style={styles.setRowHeader}>
@@ -293,6 +352,16 @@ export default function WorkoutScreen() {
                   </TouchableOpacity>
                 </View>
               ))}
+
+              <TouchableOpacity
+                style={[styles.addExerciseBtn, { borderColor: theme.backgroundSelected }]}
+                onPress={handleAddExercise}
+              >
+                <Plus color={theme.textSecondary} size={16} />
+                <Text style={[styles.addExerciseBtnText, { color: theme.textSecondary }]}>
+                  Добавить упражнение
+                </Text>
+              </TouchableOpacity>
 
               <TouchableOpacity style={styles.saveWorkoutBtn} onPress={handleSaveWorkout}>
                 <CheckCircle color="#ffffff" size={18} />
@@ -468,10 +537,38 @@ const styles = StyleSheet.create({
     padding: Spacing.three,
     gap: Spacing.two,
   },
-  exerciseCardTitle: {
+  exerciseHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.two,
+    marginBottom: Spacing.two,
+  },
+  exerciseInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
     fontSize: 15,
+    fontWeight: '600',
+  },
+  deleteExerciseBtn: {
+    padding: Spacing.one,
+  },
+  addExerciseBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.one,
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderRadius: 12,
+    paddingVertical: 12,
+    marginTop: Spacing.one,
+  },
+  addExerciseBtnText: {
+    fontSize: 14,
     fontWeight: 'bold',
-    marginBottom: Spacing.one,
   },
   setRowHeader: {
     flexDirection: 'row',
